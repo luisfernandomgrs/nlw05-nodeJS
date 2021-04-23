@@ -20,6 +20,9 @@ const settingsController = new SettingsController();
 const usersController = new UsersController();
 const messagesController = new MessagesController();
 
+routes.get("/settings/:username", settingsController.findByUsername);
+//Para que essa rota funcione, você precisa ter o usuário admin cadastrado...
+routes.put("/settings/:username", settingsController.update);
 routes.post("/settings", settingsController.create);
 
 routes.post("/users", usersController.create);
