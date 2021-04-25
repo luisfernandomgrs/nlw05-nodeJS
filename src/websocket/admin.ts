@@ -18,4 +18,36 @@ io.on("connect", async (socket) => {
 
     callback(allMessages);
   });
+
+  socket.on("admin_send_message", async (params) => {
+    const { user_id, text } = params;
+
+    await messagesService.create({
+      text,
+      user_id,
+      admin_id: socket.id
+    });
+
+    // quando desestruturamos um retorno, é necessário usar o nome correto
+    // da propriedades que existe no conjunto de dados de origem...
+    // não é permitido usar um nome diferente.
+    const { socket_id } = await connectionsService.findByUserId(user_id);
+
+    io.to(socket_id).emit("admin_send_to_client", {
+      text,
+      socket_id: socket.id
+    });
+  });
+
+  socket.on("admin_user_in_support", async params => {
+    const { user_id } = params;
+    await connectionsService.updateAdminId(user_id, socket.id);
+
+    const allConnectionsWithoutAdmin = await connectionsService.findAllWithoutAdmin();
+
+    // Observe que não usaremos o websocket neste momento, mas o "io"...
+    // O motivo é que não desejamos enviar somente para um id especifico,
+    // mas para todos que estiverem ouvindo este evento.
+    io.emit("admin_list_all_users", allConnectionsWithoutAdmin);
+  });
 });

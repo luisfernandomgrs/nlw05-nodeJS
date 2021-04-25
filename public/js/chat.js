@@ -1,11 +1,15 @@
-document.querySelector("#start_chat").addEventListener("click", (event) => {
+let socket_admin_id = null;
+let emailUser = null;
+let socket = null;
 
-  const socket = io();
+document.querySelector("#start_chat").addEventListener("click", (event) => {
+  socket = io();
+  const email = document.getElementById("email").value;
   const chat_help = document.getElementById("chat_help");
   const chat_in_support = document.getElementById("chat_in_support");
-  const email = document.getElementById("email").value;
   const text = document.getElementById("txt_help").value;
-
+  
+  emailUser = email;
   chat_help.style.display = "none";
   chat_in_support.style.display = "block";
 
@@ -26,8 +30,8 @@ document.querySelector("#start_chat").addEventListener("click", (event) => {
   });
 
   socket.on("client_list_all_messages", (messages) => {
-    var template_client = document.getElementById("message-user-template").innerHTML;
-    var template_admin = document.getElementById("admin-template").innerHTML;
+    const template_client = document.getElementById("message-user-template").innerHTML;
+    const template_admin = document.getElementById("admin-template").innerHTML;
 
     messages.forEach(message => {
       if (message.admin_id === null){
@@ -48,4 +52,32 @@ document.querySelector("#start_chat").addEventListener("click", (event) => {
     });
   });
 
+  socket.on("admin_send_to_client", (message) => {
+    const template_admin = document.getElementById("admin-template").innerHTML;
+    const rendered = Mustache.render(template_admin, {
+      message_admin: message.text
+    });
+    
+    socket_admin_id = message.socket_id;
+    document.getElementById("messages").innerHTML += rendered;
+  });
+});
+
+document.querySelector("#send_message_button").addEventListener("click", (event) => {
+  const text = document.getElementById("message_user");
+  const params = {
+    text: text.value,
+    socket_admin_id
+  };
+
+  socket.emit("client_send_to_admin", params);
+
+  const template_client = document.getElementById("message-user-template").innerHTML;
+  const rendered = Mustache.render(template_client, {
+    message: text.value,
+    email: emailUser
+  });
+
+  document.getElementById("messages").innerHTML += rendered;
+  text.value = "";
 });

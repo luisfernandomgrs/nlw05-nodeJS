@@ -41,7 +41,7 @@ class SettingsService {
 
   //Para que essa rota funcione, você precisa ter o usuário definido em "username" cadastrado...
   async update(username: string, chat: boolean) {
-    const settings = await this.settingsRepository.createQueryBuilder()
+    await this.settingsRepository.createQueryBuilder()
       .update(Setting)
       .set({ chat })
       .where("username=:username", {
