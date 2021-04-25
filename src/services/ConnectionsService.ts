@@ -25,7 +25,6 @@ class ConnectionsService {
     });
 
     await this.connectionsRepository.save(connection);
-
     return connection;
   };
 
@@ -35,6 +34,15 @@ class ConnectionsService {
     });
 
     return connection;
+  };
+
+  async findAllWithoutAdmin() {
+    const connections = await this.connectionsRepository.find({
+      where: { admin_id: null },
+      relations: ["user"]
+    });
+
+    return connections;
   };
 };
 

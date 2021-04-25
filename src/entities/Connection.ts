@@ -9,17 +9,16 @@ import {
 } from "typeorm";
 
 import { v4 as uuid } from "uuid";
-import { User } from "./Users";
+import { User } from "./User";
 
 @Entity("connections")
 class Connection {
   @PrimaryColumn() id: string;
   @Column() admin_id: string;
-
   @Column() user_id: string;
 
-  @JoinColumn({ name: "user_id" })
   @ManyToOne(() => User)
+  @JoinColumn({ name: "user_id" })
   user: User;
 
   @Column() socket_id: string;

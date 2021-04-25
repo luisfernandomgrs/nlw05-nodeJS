@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 
 import { v4 as uuid } from "uuid";
-import { User } from "./Users";
+import { User } from "./User";
 
 @Entity("messages")
 class Message {
@@ -17,8 +17,8 @@ class Message {
 
   @Column() user_id: string;
 
-  @JoinColumn({ name: "user_id" })
   @ManyToOne(() => User)
+  @JoinColumn({ name: "user_id" })
   user: User;
 
   @Column() text: string;

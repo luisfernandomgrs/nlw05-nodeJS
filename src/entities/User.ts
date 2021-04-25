@@ -2,8 +2,7 @@ import {
   Entity,
   PrimaryColumn,
   Column,
-  CreateDateColumn,
-  PrimaryGeneratedColumn
+  CreateDateColumn
 } from "typeorm";
 
 import { v4 as uuid } from "uuid";

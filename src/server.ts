@@ -1,4 +1,5 @@
 import { http, io } from "./http";
+import "./websocket/admin";
 import "./websocket/client";
 
 const port = 3000;

@@ -27,13 +27,17 @@ app.set("views", path.join(__dirname, "..", "public"));
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
 
+app.get("/pages/admin", (request, response) => {
+  return response.render("html/admin.html");
+});
+
 app.get("/pages/client", (request, response) => {
   return response.render("html/client.html");
 });
 
-io.on("connection", (socket: Socket) => {
-  // console.log(`Connected at by id: ${socket.id}`)
-});
+// io.on("connection", (socket: Socket) => {
+//   console.log(`SOCKET ID | Connected at id: ${socket.id}`)
+// });
 
 app.use(express.json());
 app.use(routes);
